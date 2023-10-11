@@ -1,6 +1,7 @@
 package rachio.giftexchange.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 
@@ -63,6 +64,23 @@ public class GiftExchangeServiceTest {
 		giftExchangeService.assignGiftGivers(familyMembers);
 
 		assertEquals(familyMembers, originalFamilyMembers);
+	}
+
+	@Test
+	public void testThreeYearRestriction() {
+		// Assign gift givers for four consecutive years
+		giftExchangeService.assignGiftGivers(familyMembers);
+		giftExchangeService.assignGiftGivers(familyMembers);
+		giftExchangeService.assignGiftGivers(familyMembers);
+		giftExchangeService.assignGiftGivers(familyMembers);
+
+		for (FamilyMember member : familyMembers) {
+			assertNotNull(member.getGiftGiver());
+		}
+
+		for (FamilyMember member : familyMembers) {
+			assertFalse(member.hasGiftedInLastNYears(member.getGiftGiver(), 3));
+		}
 	}
 
 }
